@@ -1,11 +1,8 @@
-
+## **1. Headers**
 # **Markdown v2 Overview**
 ---
 
 ```markdown
-
-## **1. Headers**
-
 **Syntax:**
 ```markdown
 # Header 1
