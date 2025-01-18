@@ -1,9 +1,7 @@
-Sure! Here's the complete markdown content without the Escaped Strings section:
 
----
+# **Markdown v2 Overview**
 
 ```markdown
-# **Markdown v2 Overview**
 
 ---
 
