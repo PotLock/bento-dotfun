@@ -1,8 +1,4 @@
-The "Escaped Strings" section has been removed. Here is the markdown content without that section:
 
-Below is the updated markdown content with the Escaped Strings section removed:
-
----
 
 # **Markdown v2 Overview**
 
