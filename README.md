@@ -1,4 +1,6 @@
-Below is the complete Markdown v2 overview, including the **Features Summary** with both text-based and icon-based syntax:
+The "Escaped Strings" section has been removed. Here is the markdown content without that section:
+
+Below is the updated markdown content with the Escaped Strings section removed:
 
 ---
 
@@ -210,17 +212,6 @@ This defines the AI model configuration with a maximum token limit.
 The AI component being used is: {AIModel}.
 ```
 
-**Escaped Strings in AI Components:**
-```markdown
-~ai[AIModel](name: "model\\(name\\)", max_tokens: 100, description: "This is an AI model \\~with\\~ special characters.")
-This AI model has a name with parentheses and a description with tildes.
-~
-```
-
-**Rendered Output:**
-- **Name:** `model(name)`  
-- **Description:** `This is an AI model ~with~ special characters.`
-
 ---
 
 ## **8. Tools**
@@ -260,18 +251,6 @@ Brief overview of the tool’s purpose.
 Performs basic arithmetic operations and returns the result.
 ~
 ```
-
-**Escaped Strings in Tools:**
-```markdown
-~tool[MyTool](param1: "value\\(with\\)parentheses", param2: "value\\[with\\]brackets", param3: "value\\~tilde")
-This tool has parameters with parentheses, brackets, and a tilde.
-~
-```
-
-**Rendered Output:**
-- **Parameter 1:** `value(with)parentheses`  
-- **Parameter 2:** `value[with]brackets`  
-- **Parameter 3:** `value~tilde`
 
 ---
 
@@ -345,4 +324,4 @@ Fallback content goes here.
 
 ---
 
-This updated guide now includes the **Features Summary** with icon-based syntax, providing a clear and visual distinction for each component type.
+You can now copy this updated content and use it directly in a `.md` file.
