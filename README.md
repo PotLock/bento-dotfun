@@ -408,3 +408,5 @@ Level 1 content.
 | **Include Markdown**     | `~mkd(url="URL")`                | `~📄(url="URL")`                    | Fetches and renders external Markdown.           |
 
 ---
+
+This complete overview now incorporates the emoji-based syntax and example for `~mkd`.
