@@ -401,9 +401,7 @@ Level 1 content.
 | **Define AI Components** | `@ai[BotName](param: value, ...)` | `@🤖 [BotName](param: value, ...)` | Declares AI models and configurations.           |
 | **Generate AI Content**  | `~ai[BotName](prompt)`           | `~🤖 [BotName](prompt)`             | Generates content based on the specified prompt. |
 | **Generate AI Image**    | `~ai-img[BotName](prompt)`       | `~🤖🖼️ [BotName](prompt)`           | Generates an image based on the specified prompt.|
-| **Generate AI Voice**    | `~ai-voice[BotName](prompt)`     | `~🤖🔈
-
- [BotName](prompt)`           | Generates voice audio based on the specified prompt.|
+| **Generate AI Voice**    | `~ai-voice[BotName](prompt)`     | `~🤖🔈[BotName](prompt)`           | Generates voice audio based on the specified prompt.|
 | **Generate AI Video**    | `~ai-video[BotName](prompt)`     | `~🤖🎬 [BotName](prompt)`           | Generates a video based on the specified prompt. |
 | **Include Markdown**     | `~mkd(url="URL")`                | `~📄(url="URL")`                    | Fetches and renders external Markdown.           |
 
