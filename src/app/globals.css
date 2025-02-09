@@ -1,0 +1,216 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.markdown-editor {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.markdown-input,
+.markdown-preview {
+  flex: 1;
+  min-height: 400px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.markdown-input {
+  font-family: monospace;
+  resize: vertical;
+}
+
+.markdown-preview {
+  background: #f9f9f9;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+/* Components */
+.lv1, .lv2, .lv3 {
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.lv1 {
+  background: #f5f5f5;
+  border-left: 4px solid #333;
+}
+
+.lv2 {
+  background: #f0f0f0;
+  border-left: 4px solid #666;
+  margin-left: 20px;
+}
+
+.lv3 {
+  background: #e8e8e8;
+  border-left: 4px solid #999;
+  margin-left: 40px;
+}
+
+/* AI Components */
+.ai-content, .ai-image, .ai-voice, .ai-video {
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 4px;
+  background: #f0f8ff;
+  border: 1px solid #b8d4ff;
+}
+
+.ai-image {
+  background: #f0fff4;
+  border-color: #b8ffd4;
+}
+
+.ai-voice {
+  background: #fff0f0;
+  border-color: #ffb8b8;
+}
+
+.ai-video {
+  background: #f4f0ff;
+  border-color: #d4b8ff;
+}
+
+/* Code blocks */
+pre {
+  background: #f4f4f4;
+  padding: 15px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+code {
+  font-family: monospace;
+  background: #f4f4f4;
+  padding: 2px 4px;
+  border-radius: 2px;
+}
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 15px 0;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f5f5f5;
+}
+
+/* Task Lists */
+.task-list-item {
+  list-style: none;
+  margin: 5px 0;
+}
+
+.task-list-item input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Blockquotes */
+blockquote {
+  border-left: 4px solid #ddd;
+  margin: 15px 0;
+  padding: 10px 20px;
+  background: #f9f9f9;
+}
+
+.emoji-quote {
+  border-left-color: #66ccff;
+  background: #f0f8ff;
+}
+
+/* Horizontal Rules */
+hr {
+  border: none;
+  border-top: 2px solid #eee;
+  margin: 20px 0;
+}
+
+.emoji-hr {
+  border-top-style: dashed;
+  border-top-color: #66ccff;
+}
+
+/* Footnotes */
+.footnote {
+  color: #0066cc;
+  cursor: help;
+}
+
+/* Definition Lists */
+dl {
+  margin: 15px 0;
+}
+
+dt {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+dd {
+  margin-left: 20px;
+  color: #666;
+}
+
+.emoji-list dt {
+  color: #0066cc;
+}
+
+/* Subscript & Superscript */
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+/* Code Preview */
+.html-result pre {
+  margin: 0;
+  padding: 15px;
+  background: #f4f4f4;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.html-result code {
+  font-family: monospace;
+  color: #333;
+}
+
+/* HTML entities */
+.html-result code .entity {
+  color: #2020c0;
+}
+
+/* Add some spacing between sections */
+.demo-section + .demo-section {
+  margin-top: 40px;
+}
+
+
