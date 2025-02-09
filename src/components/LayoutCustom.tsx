@@ -1,16 +1,14 @@
 'use client';
 
-import { useWallet } from "@/context/WalletContext";
 import Navbar from "./Navbar";
 
 const LayoutCustom = ({ children }: { children: React.ReactNode }) => {
-  const walletState = useWallet();
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen">
       <div className="container mx-auto">
-        <Navbar walletState={walletState} />
+        <Navbar />
         {children}
-        </div>
+      </div>
     </div>
   );
 };

@@ -37,7 +37,7 @@ export default function ProfilePage() {
       setUserData(userData);
 
       // Fetch all user's markdowns
-      const markdownResponse = await fetch(`/api/markdown/get?address=${address}`);
+      const markdownResponse = await fetch(`/api/markdown/get-by-address?userAddress=${address}`);
       const markdownData = await markdownResponse.json();
       setAllUserMarkdowns(markdownData);
 
@@ -111,15 +111,6 @@ export default function ProfilePage() {
     !markdowns.some(m => m.id === markdown.id)
   );
 
-  const calculateHeight = (htmlContent: string) => {
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = JSON.parse(htmlContent);
-    tempDiv.style.width = '300px'; // Set a fixed width for calculation
-    document.body.appendChild(tempDiv);
-    const height = tempDiv.offsetHeight;
-    document.body.removeChild(tempDiv);
-    return Math.min(height + 100, 500); // Add padding and cap at 500px
-  };
 
   if (!isConnected) {
     return (
@@ -218,7 +209,7 @@ export default function ProfilePage() {
                         <h4 className="font-semibold text-gray-800">{markdown.title}</h4>
                         <div 
                           className="prose prose-sm"
-                          dangerouslySetInnerHTML={{ __html: JSON.parse(markdown.htmlContent) }}
+                          dangerouslySetInnerHTML={{ __html: markdown.htmlContent }}
                         />
                         <p className="text-sm text-gray-500">
                           Created: {new Date(markdown.createdAt).toLocaleDateString()}
@@ -281,7 +272,7 @@ export default function ProfilePage() {
                             </div>
                             <div 
                               className="prose prose-sm"
-                              dangerouslySetInnerHTML={{ __html: JSON.parse(markdown.htmlContent) }}
+                              dangerouslySetInnerHTML={{ __html: markdown.htmlContent }}
                             />
                             <p className="text-sm text-gray-500">
                               Created: {new Date(markdown.createdAt).toLocaleDateString()}

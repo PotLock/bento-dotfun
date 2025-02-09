@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Editor from '@/components/Editor';
-import Navbar from '@/components/Navbar';
 import { useWallet } from '@/context/WalletContext';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -14,6 +13,7 @@ interface Markdown {
   htmlContent: string;
   userAddress: string;
   createdAt: Date;
+  isShared: boolean;
 }
 
 export default function EditPage() {
@@ -22,6 +22,7 @@ export default function EditPage() {
   const walletState = useWallet();
   const [markdown, setMarkdown] = useState<Markdown | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     const fetchMarkdown = async () => {
@@ -32,8 +33,13 @@ export default function EditPage() {
         }
         const data = await response.json();
         
-        if (data.userAddress !== walletState.address) {
-          toast.error('You can only edit your own markdowns');
+        // Check if the user is the owner
+        const isOwner = data.userAddress === walletState.address;
+        setIsOwner(isOwner);
+        
+        // If the markdown is not shared and the user is not the owner, redirect
+        if (!data.isShared && !isOwner) {
+          toast.error('This markdown is private');
           router.push('/explore');
           return;
         }
@@ -53,7 +59,12 @@ export default function EditPage() {
     }
   }, [params.id, walletState.address]);
 
-  const handleSave = async (title: string, content: string, htmlContent: string) => {
+  const handleSave = async (title: string, content: string, htmlContent: string, isShared: boolean) => {
+    if (!isOwner) {
+      toast.error('You can only edit your own markdowns');
+      return;
+    }
+
     const savePromise = async () => {
       const response = await fetch('/api/markdown/update', {
         method: 'PUT',
@@ -64,8 +75,9 @@ export default function EditPage() {
           id: params.id,
           title,
           content,
-          htmlContent,
+          htmlContent: JSON.stringify(htmlContent),
           userAddress: walletState.address,
+          isShared,
         }),
       });
 
@@ -90,7 +102,6 @@ export default function EditPage() {
     return (
       <div className="min-h-screen p-8">
         <div className="container mx-auto">
-          <Navbar walletState={walletState} />
           <div className="text-center">Loading...</div>
         </div>
       </div>
@@ -101,7 +112,6 @@ export default function EditPage() {
     return (
       <div className="min-h-screen p-8">
         <div className="container mx-auto">
-          <Navbar walletState={walletState} />
           <div className="text-center">Markdown not found</div>
         </div>
       </div>
@@ -112,14 +122,20 @@ export default function EditPage() {
     <div className="min-h-screen p-8">
       <Toaster position="top-center" />
       <div className="container mx-auto">
-        <Navbar walletState={walletState} />
+        {!isOwner && (
+          <div className="mb-4 p-4 bg-blue-50 text-blue-700 rounded-md">
+            You are viewing this markdown in read-only mode
+          </div>
+        )}
         {markdown && (
           <Editor
             initialValue={markdown.content}
             initialTitle={markdown.title}
+            initialIsPrivate={!markdown.isShared}
             supportEmoji={true}
             walletAddress={walletState.address || undefined}
             onSave={handleSave}
+            readOnly={!isOwner}
           />
         )}
       </div>

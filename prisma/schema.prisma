@@ -26,6 +26,7 @@ model Markdown {
   htmlContent String   @map("html_content")
   userAddress String   @map("user_address")
   createdAt   DateTime @default(now()) @map("created_at")
+  isShared    Boolean  @default(false) @map("is_shared")
   user        User     @relation(fields: [userAddress], references: [address])
 
   @@map("markdowns")

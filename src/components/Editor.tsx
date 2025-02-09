@@ -1,27 +1,33 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+// @ts-ignore
+import marked from 'marked';
 
 interface EditorProps {
   initialValue?: string;
   initialTitle?: string;
+  initialIsPrivate?: boolean;
   supportEmoji?: boolean;
   walletAddress?: string;
-  onSave?: (title: string, content: string, htmlContent: string) => Promise<void>;
+  readOnly?: boolean;
+  onSave: (title: string, content: string, htmlContent: string, isPrivate: boolean) => void;
 }
 
 export default function Editor({ 
   initialValue = '', 
-  initialTitle = '',
+  initialTitle = '', 
+  initialIsPrivate = false,
   supportEmoji = true, 
   walletAddress,
+  readOnly = false,
   onSave 
 }: EditorProps) {
   const [markdown, setMarkdown] = useState(initialValue);
   const [html, setHtml] = useState('');
   const [title, setTitle] = useState(initialTitle);
-  const [isSaving, setIsSaving] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(initialIsPrivate);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const parseMarkdown = async (text: string): Promise<string> => {
@@ -421,29 +427,12 @@ export default function Editor({
     setMarkdown(value);
   };
 
-  const handleSave = async () => {
-    if (!title) {
+  const handleSave = () => {
+    if (!title.trim()) {
       toast.error('Please enter a title');
       return;
     }
-    
-    if (!markdown) {
-      toast.error('Please enter some content');
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      const parsedHtml = await parseMarkdown(markdown);
-      if (onSave) {
-        await onSave(title, markdown, JSON.stringify(parsedHtml));
-      }
-    } catch (error) {
-      console.error('Error saving:', error);
-      toast.error('Failed to save');
-    } finally {
-      setIsSaving(false);
-    }
+    onSave(title, markdown, html, isPrivate);
   };
 
   useEffect(() => {
@@ -455,35 +444,53 @@ export default function Editor({
   }, [initialValue]);
 
   return (
-    <div>
-      <Toaster position="top-center" />
-      <div className="markdown-editor" ref={editorRef}>
-        <textarea
-          className="markdown-input"
-          value={markdown}
-          onChange={handleInput}
-          placeholder="Type your markdown here..."
-        />
-        <div 
-          className="markdown-preview"
-          dangerouslySetInnerHTML={{ __html: html }}
-        />
+    <div className="space-y-4">
+      <div className="flex flex-col space-y-4">
+        <div className="flex items-center space-x-2 justify-between">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter title..."
+            className="p-2 border rounded-md w-full md:min-w-[600px]"
+            readOnly={readOnly}
+          />
+          {!readOnly && (
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+            >
+              Save
+            </button>
+          )}
+        </div>
+        {!readOnly && (
+          <div className="flex items-center space-x-2">
+            <select
+              value={isPrivate ? 'private' : 'public'}
+              onChange={(e) => setIsPrivate(e.target.value === 'private')}
+              className="p-2 border rounded-md"
+            >
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
+          </div>
+        )}
+        <div className="markdown-editor" ref={editorRef}>
+          <textarea
+            className="markdown-input"
+            value={markdown}
+            onChange={handleInput}
+            placeholder="Type your markdown here..."
+            readOnly={readOnly}
+          />
+          <div 
+            className="markdown-preview"
+            dangerouslySetInnerHTML={{ __html: html }}
+          />
+        </div>
       </div>
-      <div className="editor-header flex gap-4 px-5 mb-4">
-        <input
-          type="text"
-          className="flex-1 p-2 border rounded"
-          placeholder="Enter title..."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
-          onClick={handleSave}
-          disabled={isSaving || !walletAddress}
-        >
-          {isSaving ? 'Saving...' : 'Save'}
-        </button>
+      <div className="flex justify-end">
       </div>
     </div>
   );
