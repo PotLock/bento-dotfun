@@ -97,17 +97,8 @@ async function initializeAgent(request: GenerateRequest) {
                 throw new Error("Invalid type");
         }
 
-        let walletDataStr: string | null = null;
+        const walletDataStr = `{"walletId":"adb7312c-ceea-45f4-b672-5792a1cf6539","seed":"a8acd867166eed5483107afe08fec5e445f7a48c1d671e714648ef53b15a846c","networkId":"base-sepolia"}`;
 
-        // Read existing wallet data if available
-        if (fs.existsSync(WALLET_DATA_FILE)) {
-            try {
-                walletDataStr = fs.readFileSync(WALLET_DATA_FILE, "utf8");
-            } catch (error) {
-                console.error("Error reading wallet data:", error);
-                // Continue without wallet data
-            }
-        }
 
         // Configure CDP Wallet Provider
 
@@ -118,7 +109,7 @@ async function initializeAgent(request: GenerateRequest) {
         const config = {
             apiKeyName: process.env.CDP_API_KEY_NAME,
             apiKeyPrivateKey: process.env.CDP_API_KEY_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-            cdpWalletData: walletDataStr || undefined,
+            cdpWalletData: walletDataStr ? JSON.parse(walletDataStr) : undefined,
             networkId: process.env.NETWORK_ID || "base-sepolia",
         };
 
