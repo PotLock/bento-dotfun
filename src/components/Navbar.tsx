@@ -43,6 +43,26 @@ const Navbar = () => {
                   <span>Explore</span>
                 </div>
               </Link>
+              <Link
+                href="/web3"
+                className={`text-gray-700 hover:text-blue-600 transition-colors ${
+                  pathname === '/web3' ? 'font-semibold text-blue-600' : ''
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <span>Web3</span>
+                </div>
+              </Link>
+              <Link
+                href="/docs"
+                className={`text-gray-700 hover:text-blue-600 transition-colors ${
+                  pathname === '/docs' ? 'font-semibold text-blue-600' : ''
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <span>Docs</span>
+                </div>
+              </Link>
             </div>
           </div>
           <div className="flex items-center space-x-4">
