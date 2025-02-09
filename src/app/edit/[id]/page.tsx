@@ -75,7 +75,7 @@ export default function EditPage() {
           id: params.id,
           title,
           content,
-          htmlContent: JSON.stringify(htmlContent),
+          htmlContent: htmlContent,
           userAddress: walletState.address,
           isShared,
         }),
@@ -85,7 +85,7 @@ export default function EditPage() {
         throw new Error('Failed to update markdown');
       }
 
-      router.push('/explore');
+      router.push('/');
     };
 
     toast.promise(

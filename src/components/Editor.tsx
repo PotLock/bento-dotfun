@@ -169,9 +169,9 @@ export default function Editor({
     text = text.replace(/^###\s+(.+?)$/gm, '<h3>$1</h3>');
 
     // Other standard patterns
-    text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    text = text.replace(/~~(.*?)~~/g, '<del>$1</del>');
+    text = text.replace(/\*\*(.*?)\*\*/g, '<p><strong>$1</strong></p>');
+    text = text.replace(/\*(.*?)\*/g, '<p><em>$1</em></p>');
+    text = text.replace(/~~(.*?)~~/g, '<p><del>$1</del></p>');
     
     // Process standard images before links to avoid conflicts
     text = text.replace(/!\[([^\]]+)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');

@@ -34,9 +34,8 @@ const Create = () => {
         throw new Error('Failed to save markdown');
       }
 
-      const result = await response.json();
       toast.success('Markdown saved successfully!');
-      router.push('/explore');
+      router.push('/');
     } catch (error) {
       console.error('Error saving markdown:', error);
       toast.error('Failed to save markdown');
