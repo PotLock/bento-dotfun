@@ -1,15 +1,27 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface EditorProps {
   initialValue?: string;
+  initialTitle?: string;
   supportEmoji?: boolean;
+  walletAddress?: string;
+  onSave?: (title: string, content: string, htmlContent: string) => Promise<void>;
 }
 
-export default function Editor({ initialValue = '', supportEmoji = true }: EditorProps) {
+export default function Editor({ 
+  initialValue = '', 
+  initialTitle = '',
+  supportEmoji = true, 
+  walletAddress,
+  onSave 
+}: EditorProps) {
   const [markdown, setMarkdown] = useState(initialValue);
   const [html, setHtml] = useState('');
+  const [title, setTitle] = useState(initialTitle);
+  const [isSaving, setIsSaving] = useState(false);
   const editorRef = useRef<HTMLDivElement>(null);
 
   const parseMarkdown = async (text: string): Promise<string> => {
@@ -404,9 +416,34 @@ export default function Editor({ initialValue = '', supportEmoji = true }: Edito
 
   const handleInput = async (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    setMarkdown(value);
     const parsedHtml = await parseMarkdown(value);
     setHtml(parsedHtml);
+    setMarkdown(value);
+  };
+
+  const handleSave = async () => {
+    if (!title) {
+      toast.error('Please enter a title');
+      return;
+    }
+    
+    if (!markdown) {
+      toast.error('Please enter some content');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const parsedHtml = await parseMarkdown(markdown);
+      if (onSave) {
+        await onSave(title, markdown, JSON.stringify(parsedHtml));
+      }
+    } catch (error) {
+      console.error('Error saving:', error);
+      toast.error('Failed to save');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   useEffect(() => {
@@ -418,17 +455,36 @@ export default function Editor({ initialValue = '', supportEmoji = true }: Edito
   }, [initialValue]);
 
   return (
-    <div className="markdown-editor" ref={editorRef}>
-      <textarea
-        className="markdown-input"
-        value={markdown}
-        onChange={handleInput}
-        placeholder="Type your markdown here..."
-      />
-      <div 
-        className="markdown-preview"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+    <div>
+      <Toaster position="top-center" />
+      <div className="markdown-editor" ref={editorRef}>
+        <textarea
+          className="markdown-input"
+          value={markdown}
+          onChange={handleInput}
+          placeholder="Type your markdown here..."
+        />
+        <div 
+          className="markdown-preview"
+          dangerouslySetInnerHTML={{ __html: html }}
+        />
+      </div>
+      <div className="editor-header flex gap-4 px-5 mb-4">
+        <input
+          type="text"
+          className="flex-1 p-2 border rounded"
+          placeholder="Enter title..."
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <button
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50"
+          onClick={handleSave}
+          disabled={isSaving || !walletAddress}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </div>
   );
 } 

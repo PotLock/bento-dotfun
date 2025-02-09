@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  address       String     @unique
+  image         String?    @default("/default-avatar.png")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  markdowns     Markdown[]
+  displayOrder  String[]   @default([]) @map("display_order") // Store IDs of markdowns to display in order
+
+  @@map("users")
+}
+
+model Markdown {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  htmlContent String   @map("html_content")
+  userAddress String   @map("user_address")
+  createdAt   DateTime @default(now()) @map("created_at")
+  user        User     @relation(fields: [userAddress], references: [address])
+
+  @@map("markdowns")
+}

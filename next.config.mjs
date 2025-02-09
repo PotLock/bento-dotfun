@@ -2,6 +2,7 @@
 const nextConfig = {
   env: {
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    POSTGRES_URL: process.env.POSTGRES_URL,
   },
   reactStrictMode: true,
   swcMinify: true,

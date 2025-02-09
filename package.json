@@ -10,20 +10,24 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.1.9",
     "@coinbase/wallet-sdk": "^4.3.0",
-    "@types/next-auth": "^3.15.0",
+    "@hello-pangea/dnd": "^18.0.0",
+    "@prisma/client": "^6.3.1",
+    "@vercel/postgres": "^0.10.0",
     "ai": "^4.1.26",
     "ethers": "^6.13.5",
     "next": "^14.1.0",
-    "next-auth": "^4.24.11",
     "openai": "^4.83.0",
+    "prisma": "^6.3.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.5.1",
+    "uuid": "^11.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
     "@babel/preset-env": "^7.22.0",
     "@types/jest": "^29.5.0",
-    "@types/node": "^20.11.0",
+    "@types/node": "^20.17.17",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.20",
@@ -33,6 +37,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.0"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
   }
 }

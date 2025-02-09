@@ -85,7 +85,7 @@ export function useCoinbaseWallet() {
 
   return {
     wallet,
-    account,
+    address: account,
     error,
     connect,
     disconnect,
