@@ -151,8 +151,8 @@ async function initializeAgent(request: GenerateRequest) {
         });
 
         // Save wallet data
-        const exportedWallet = await walletProvider.exportWallet();
-        fs.writeFileSync(WALLET_DATA_FILE, JSON.stringify(exportedWallet));
+        // const exportedWallet = await walletProvider.exportWallet();
+        // fs.writeFileSync(WALLET_DATA_FILE, JSON.stringify(exportedWallet));
 
         return { agent, config: agentConfig, tools };
     } catch (error) {
