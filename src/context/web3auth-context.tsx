@@ -228,6 +228,55 @@ export function Web3AuthProvider({ children }: Web3AuthProviderProps) {
       try {
         setIsLoading(true);
         await web3auth.init();
+        
+        // Check if user was previously logged in
+        const savedAccountId = localStorage.getItem('accountId');
+        if (savedAccountId && web3auth) {
+          try {
+            if (!web3auth.connected) {
+              // Only attempt to reconnect if not already connected
+              const web3authProvider = await web3auth.connectTo(WALLET_ADAPTERS.AUTH, {
+                loginProvider: "google"
+              });
+              
+              if (web3authProvider) {
+                setProvider(web3authProvider);
+                setAccountId(savedAccountId);
+                
+                // Recreate NEAR connection
+                const privateKey = await web3authProvider.request({ method: "private_key" });
+                const privateKeyEd25519 = getED25519Key(privateKey as string).sk.toString("hex");
+                const privateKeyEd25519Buffer = Buffer.from(privateKeyEd25519, "hex");
+                const bs58encode = utils.serialize.base_encode(privateKeyEd25519Buffer);
+                const keyPair = KeyPair.fromString(`ed25519:${bs58encode}`);
+                
+                await setupNearConnection(keyPair, savedAccountId);
+              }
+            } else {
+              // If already connected, just get the provider and restore the connection
+              const web3authProvider = await web3auth.provider;
+              if (web3authProvider) {
+                setProvider(web3authProvider);
+                setAccountId(savedAccountId);
+                
+                // Recreate NEAR connection
+                const privateKey = await web3authProvider.request({ method: "private_key" });
+                const privateKeyEd25519 = getED25519Key(privateKey as string).sk.toString("hex");
+                const privateKeyEd25519Buffer = Buffer.from(privateKeyEd25519, "hex");
+                const bs58encode = utils.serialize.base_encode(privateKeyEd25519Buffer);
+                const keyPair = KeyPair.fromString(`ed25519:${bs58encode}`);
+                
+                await setupNearConnection(keyPair, savedAccountId);
+              }
+            }
+          } catch (error) {
+            console.error("Error restoring session:", error);
+            localStorage.removeItem('accountId');
+            setProvider(null);
+            setAccountId(null);
+            setNearConnection(null);
+          }
+        }
         console.log("Web3Auth initialized successfully");
       } catch (error: any) {
         console.error("Error initializing Web3Auth:", error);
