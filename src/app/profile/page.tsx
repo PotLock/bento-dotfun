@@ -1,6 +1,6 @@
 'use client';
 
-import { useWallet } from '@/context/WalletContext';
+import { useNear } from '@/context/near-context';
 import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided } from '@hello-pangea/dnd';
 import Image from 'next/image';
@@ -16,7 +16,7 @@ interface User {
 }
 
 export default function ProfilePage() {
-  const { address, isConnected } = useWallet();
+  const { wallet, signedAccountId } = useNear();
   const [markdowns, setMarkdowns] = useState<Markdown[]>([]);
   const [allUserMarkdowns, setAllUserMarkdowns] = useState<Markdown[]>([]);
   const [balance, setBalance] = useState('0');
@@ -24,20 +24,20 @@ export default function ProfilePage() {
   const [userData, setUserData] = useState<User | null>(null);
 
   useEffect(() => {
-    if (isConnected && address) {
+    if (signedAccountId) {
       fetchUserData();
     }
-  }, [isConnected, address]);
+  }, [signedAccountId]);
 
   const fetchUserData = async () => {
     try {
       // Fetch user data including their markdowns and display order
-      const userResponse = await fetch(`/api/user?address=${address}`);
+      const userResponse = await fetch(`/api/user?address=${signedAccountId}`);
       const userData: User = await userResponse.json();
       setUserData(userData);
 
       // Fetch all user's markdowns
-      const markdownResponse = await fetch(`/api/markdown/get-by-address?userAddress=${address}`);
+      const markdownResponse = await fetch(`/api/markdown/get-by-address?userAddress=${signedAccountId}`);
       const markdownData = await markdownResponse.json();
       setAllUserMarkdowns(markdownData);
 
@@ -86,7 +86,7 @@ export default function ProfilePage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          address,
+          address: signedAccountId,
           displayOrder,
         }),
       });
@@ -112,7 +112,7 @@ export default function ProfilePage() {
   );
 
 
-  if (!isConnected) {
+  if (!signedAccountId) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
         <div className="text-center space-y-4">
@@ -148,12 +148,12 @@ export default function ProfilePage() {
             <div className="space-y-2">
               <Link 
                 target="_blank" 
-                href={`https://etherscan.io/address/${address}`} 
+                href={`https://explorer.testnet.near.org/accounts/${signedAccountId}`} 
                 className="inline-flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
               >
                 <span className="font-medium">Address:</span>
                 <span className="bg-gray-50 px-3 py-1 rounded-full">
-                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                  {signedAccountId?.slice(0, 6)}...{signedAccountId?.slice(-4)}
                 </span>
               </Link>
               <div className="flex items-center justify-center sm:justify-start gap-2">

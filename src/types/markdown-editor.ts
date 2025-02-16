@@ -1,6 +1,10 @@
-import { Markdown as PrismaMarkdown } from '@prisma/client';
-
-export interface Markdown extends PrismaMarkdown {
+export interface Markdown {
+  id: string;
+  title: string;
+  content: string;
+  htmlContent: string;
+  userAddress: string;
+  createdAt: Date;
   isShared: boolean;
   user?: {
     address: string;

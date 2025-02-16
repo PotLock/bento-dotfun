@@ -1,17 +1,16 @@
 'use client';
 
 import Editor from "@/components/Editor";
-import Navbar from "@/components/Navbar";
-import { useWallet } from '@/context/WalletContext';
+import { useContractInteraction } from "@/hooks/useContractInteraction";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 const Create = () => {
-  const walletState = useWallet();
+  const { currentAccountId } = useContractInteraction();
   const router = useRouter();
 
   const handleSave = async (title: string, content: string, htmlContent: string) => {
-    if (!walletState.address) {
+    if (!currentAccountId) {
       toast.error('Please connect your wallet first');
       return;
     }
@@ -26,7 +25,7 @@ const Create = () => {
           title,
           content,
           htmlContent,
-          userAddress: walletState.address,
+          userAddress: currentAccountId,
         }),
       });
 
@@ -45,7 +44,7 @@ const Create = () => {
   return (
     <div className="container mx-auto min-h-screen p-8">
       <Editor 
-        walletAddress={walletState.address || undefined} 
+        walletAddress={currentAccountId || undefined} 
         onSave={handleSave}
       />
     </div>

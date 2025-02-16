@@ -1,12 +1,32 @@
 'use client';
 
 import Link from 'next/link';
-import { useWallet } from '@/context/WalletContext';
 import { usePathname } from 'next/navigation';
+import { useWeb3Auth } from '@/context/web3auth-context';
+import { useNear } from '@/context/near-context';
+import { LoginModal } from './LoginModal';
+import { useState } from 'react';
+import { useContractInteraction } from '@/hooks/useContractInteraction';
+
 
 const Navbar = () => {
-  const { address, isConnected, connect, disconnect } = useWallet();
+  const { web3auth, loginWithProvider,accountId: web3authAccountId, logout: web3authLogout } = useWeb3Auth();
+  const { isLoggedIn, currentAccountId } = useContractInteraction();
+  const { wallet, signedAccountId } = useNear();
   const pathname = usePathname();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  console.log(currentAccountId)
+
+  const handleLogout = async () => {
+    if (web3auth?.connected) {
+      await web3authLogout();
+    }
+    if (signedAccountId) {
+      await wallet?.signOut();
+    }
+  };
+
 
   return (
     <nav className="bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-200">
@@ -66,16 +86,16 @@ const Navbar = () => {
             </div>
           </div>
           <div className="flex items-center space-x-4">
-            {isConnected ? (
+            {isLoggedIn ? (
               <>
                 <div className="flex items-center bg-white rounded-full px-4 py-2 border border-gray-200 shadow-sm">
                   <div className="w-2 h-2 rounded-full bg-green-400 mr-2"></div>
                   <Link href="/profile" className="text-sm text-gray-700 font-medium">
-                    {address?.slice(0, 6)}...{address?.slice(-4)}
+                    {currentAccountId?.slice(0, 6)}...{currentAccountId?.slice(-4)}
                   </Link>
                 </div>
                 <button
-                  onClick={disconnect}
+                  onClick={handleLogout}
                   className="px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-full hover:bg-red-100 transition-colors"
                 >
                   Disconnect
@@ -83,7 +103,7 @@ const Navbar = () => {
               </>
             ) : (
               <button
-                onClick={connect}
+                onClick={() => setIsModalOpen(true)}
                 className="px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 rounded-full hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-transform"
               >
                 Connect Wallet
@@ -92,6 +112,11 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      <LoginModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onLoginWithProvider={loginWithProvider}
+        />
     </nav>
   );
 };

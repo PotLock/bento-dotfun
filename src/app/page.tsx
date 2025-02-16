@@ -2,21 +2,25 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useWallet } from '@/context/WalletContext';
+import { useNear } from '@/context/near-context';
 import { MarkdownWithUser } from '@/types/markdown-editor';
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
+import LoginButton from "@/components/LoginButton";
+import { useContractInteraction } from '@/hooks/useContractInteraction';
 
 export default function HomePage() {
   const [markdowns, setMarkdowns] = useState<MarkdownWithUser[]>([]);
-  const { address } = useWallet();
+  const { currentAccountId, setSocial } = useContractInteraction();
+
+  console.log(currentAccountId)
 
   useEffect(() => {
     const fetchMarkdowns = async () => {
-      if (!address) return;
+      if (!currentAccountId) return;
       
       try {
-        const response = await fetch(`/api/markdown/get-by-address?userAddress=${address}`);
+        const response = await fetch(`/api/markdown/get-by-address?userAddress=${currentAccountId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch markdowns');
         }
@@ -30,7 +34,7 @@ export default function HomePage() {
     };
 
     fetchMarkdowns();
-  }, [address]);
+  }, [currentAccountId]);
 
   const handleToggleShare = async (id: string) => {
     try {
@@ -39,7 +43,7 @@ export default function HomePage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id, userAddress: address }),
+        body: JSON.stringify({ id, userAddress: currentAccountId }),
       });
 
       if (!response.ok) {
@@ -58,7 +62,7 @@ export default function HomePage() {
     }
   };
 
-  if (!address) {
+  if (!currentAccountId) {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-2xl mx-auto">
@@ -72,6 +76,7 @@ export default function HomePage() {
             <img src="/connect-wallet.svg" alt="Connect Wallet" className="w-48 h-48 mx-auto mb-6" />
             <p className="text-gray-600">Please connect your wallet to access the editor</p>
           </div>
+          {/* <LoginButton /> */}
         </div>
       </div>
     );
@@ -112,7 +117,7 @@ export default function HomePage() {
                   />
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">
-                      {markdown.user.address === address ? 'You' : 
+                      {markdown.user.address === currentAccountId ? 'You' : 
                         `${markdown.user.address.slice(0, 6)}...${markdown.user.address.slice(-4)}`}
                     </p>
                     <p className="text-xs text-gray-500">
@@ -120,7 +125,7 @@ export default function HomePage() {
                     </p>
                   </div>
                 </div>
-                {markdown.user.address === address && (
+                {markdown.user.address === currentAccountId && (
                   <button
                     onClick={() => handleToggleShare(markdown.id)}
                     className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
@@ -161,7 +166,7 @@ export default function HomePage() {
                           headers: {
                             'Content-Type': 'application/json',
                           },
-                          body: JSON.stringify({ id: markdown.id, userAddress: address }),
+                          body: JSON.stringify({ id: markdown.id, userAddress: currentAccountId }),
                         });
 
                         if (!response.ok) {
@@ -187,7 +192,7 @@ export default function HomePage() {
                   href={`/edit/${markdown.id}`}
                   className="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium transition-colors"
                 >
-                  <span>{markdown.user.address === address ? 'Edit' : 'Read'}</span>
+                  <span>{markdown.user.address === currentAccountId ? 'Edit' : 'Read'}</span>
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
