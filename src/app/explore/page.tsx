@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { getMarkdowns } from '@/lib/db/schema';
 import Link from 'next/link';
-import { useWallet } from '@/context/WalletContext';
+import { useContractInteraction } from '@/hooks/useContractInteraction';
 import { MarkdownWithUser } from '@/types/markdown-editor';
 import { formatDistanceToNow } from 'date-fns';
 
 export default function ExplorePage() {
   const [markdowns, setMarkdowns] = useState<MarkdownWithUser[]>([]);
-  const { address } = useWallet();
+  const { currentAccountId } = useContractInteraction();
 
   useEffect(() => {
     const fetchMarkdowns = async () => {
@@ -65,7 +65,7 @@ export default function ExplorePage() {
                   />
                   <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">
-                      {markdown.user.address === address ? 'You' : 
+                      {markdown.user.address === currentAccountId ? 'You' : 
                         `${markdown.user.address.slice(0, 6)}...${markdown.user.address.slice(-4)}`}
                     </p>
                     <p className="text-xs text-gray-500">

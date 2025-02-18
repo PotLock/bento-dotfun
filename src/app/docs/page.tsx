@@ -1,15 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getMarkdowns } from '@/lib/db/schema';
-import Link from 'next/link';
-import { useWallet } from '@/context/WalletContext';
-import { MarkdownWithUser } from '@/types/markdown-editor';
-import { formatDistanceToNow } from 'date-fns';
-
 export default function DocsPage() {
-
-
   return (
     <>
 

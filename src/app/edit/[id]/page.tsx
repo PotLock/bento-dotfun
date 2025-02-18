@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Editor from '@/components/Editor';
-import { useWallet } from '@/context/WalletContext';
+import { useContractInteraction } from "@/hooks/useContractInteraction";
 import toast, { Toaster } from 'react-hot-toast';
 
 interface Markdown {
@@ -19,7 +19,7 @@ interface Markdown {
 export default function EditPage() {
   const params = useParams();
   const router = useRouter();
-  const walletState = useWallet();
+  const { currentAccountId } = useContractInteraction();
   const [markdown, setMarkdown] = useState<Markdown | null>(null);
   const [loading, setLoading] = useState(true);
   const [isOwner, setIsOwner] = useState(false);
@@ -34,7 +34,7 @@ export default function EditPage() {
         const data = await response.json();
         
         // Check if the user is the owner
-        const isOwner = data.userAddress === walletState.address;
+        const isOwner = data.userAddress === currentAccountId;
         setIsOwner(isOwner);
         
         // If the markdown is not shared and the user is not the owner, redirect
@@ -57,7 +57,7 @@ export default function EditPage() {
     if (params.id) {
       fetchMarkdown();
     }
-  }, [params.id, walletState.address]);
+  }, [params.id, currentAccountId]);
 
   const handleSave = async (title: string, content: string, htmlContent: string, isShared: boolean) => {
     if (!isOwner) {
@@ -76,7 +76,7 @@ export default function EditPage() {
           title,
           content,
           htmlContent: htmlContent,
-          userAddress: walletState.address,
+          userAddress: currentAccountId,
           isShared,
         }),
       });
@@ -133,7 +133,7 @@ export default function EditPage() {
             initialTitle={markdown.title}
             initialIsPrivate={!markdown.isShared}
             supportEmoji={true}
-            walletAddress={walletState.address || undefined}
+            walletAddress={currentAccountId || undefined}
             onSave={handleSave}
             readOnly={!isOwner}
           />
